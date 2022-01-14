@@ -30,7 +30,6 @@ const AuthFilter =  async (req: Request, res: Response, next: NextFunction)=>{
                     return res.status(403).json({status: 403, message: "Bad access_token"})
                 }
             } catch (err) {
-                console.log(err)
                 return res.status(403).json({status: 403, message: 'Maleformed access_token'})
             }
 

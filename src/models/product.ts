@@ -41,7 +41,6 @@ export class ProductDao {
             conn.release();
             return result.rows.length > 0 ? result.rows : []
         }catch(err){
-            console.log(err)
             throw new Error( (err as Error).message)
         }
     }
@@ -66,7 +65,6 @@ export class ProductDao {
             conn.release();
             return result.rows[0];
         }catch(err){
-            console.log(err)
             throw new Error( (err as Error).message)
         }
     }
@@ -79,7 +77,6 @@ export class ProductDao {
             conn.release();
             return result.rows;
         }catch(err){
-            console.log(err)
             throw new Error( (err as Error).message)
         }
     }

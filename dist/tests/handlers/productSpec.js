@@ -15,80 +15,59 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const server_1 = __importDefault(require("../../server"));
 const product_1 = require("../../models/product");
-const user_1 = require("../../models/user");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const productDao = new product_1.ProductDao();
-const userDao = new user_1.UserDao();
-function generateAccessToken() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const userForm = { first_name: generateRandomString(), last_name: generateRandomString(), username: generateRandomString(), password: 'Strong1password' };
-        try {
-            const user = yield userDao.create(userForm);
-            const token = jsonwebtoken_1.default.sign({ user_id: user.id, username: user.username }, process.env.JWT_SECRET);
-            //const authenticated =  await request(app).post('/users/authenticate').send({username: user.username, password: user.password})
-            //const access_token = authenticated.body.access_token as string
-            return token;
-        }
-        catch (error) {
-            throw new Error(error.message);
-        }
-    });
-}
-function generateRandomString() {
-    return Math.random().toString(16).substring(2, 6);
-}
 describe('Product Api Test', () => {
+    const { SUPERADMIN_USERNAME, SUPERADMIN_PASSWORD } = process.env;
     it('GET: /products/index should return an array of products', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         try {
             const res = yield (0, supertest_1.default)(server_1.default).get('/products/index').send();
-            const products = res.body.products;
+            const products = (_a = res.body) === null || _a === void 0 ? void 0 : _a.products;
             expect(res.status).toEqual(200);
         }
         catch (error) {
-            console.log(error);
             throw new Error(error.message);
         }
     }));
     it('POST: /products should create new product', () => __awaiter(void 0, void 0, void 0, function* () {
-        generateAccessToken().then((token) => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(server_1.default).post('/products')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ name: 'Samsung Galaxy', price: 500, category: 'Smartphone' });
-            const product = res.body.product;
-            expect(product.name).toEqual('Samsung Galaxy');
-        })).catch(err => {
-            console.log(err);
-            throw new Error(err.message);
-        });
+        var _b, _c;
+        // Authenticate admin to get the access_token back as the product creation route is protected
+        const auth_response = yield (0, supertest_1.default)(server_1.default).post('/users/authenticate')
+            .send({ username: SUPERADMIN_USERNAME, password: SUPERADMIN_PASSWORD });
+        const token = (_b = auth_response.body) === null || _b === void 0 ? void 0 : _b.access_token;
+        const res = yield (0, supertest_1.default)(server_1.default).post('/products')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Samsung Galaxy', price: 500, category: 'Smartphone' });
+        const product = (_c = res.body) === null || _c === void 0 ? void 0 : _c.product;
+        expect(product === null || product === void 0 ? void 0 : product.name).toEqual('Samsung Galaxy');
     }));
     it('GET: /products?category=smartphone', () => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
+        var _d, _e;
         try {
             const product = yield productDao.create({ name: 'Samsung Galaxy', price: 500, category: 'Smartphone' });
-            const prodid = product.id;
+            const prodid = (_d = product) === null || _d === void 0 ? void 0 : _d.id;
             const res = yield (0, supertest_1.default)(server_1.default).get('/products?category=Smartphone').send();
-            const resultList = (_a = res.body) === null || _a === void 0 ? void 0 : _a.products;
+            const resultList = (_e = res.body) === null || _e === void 0 ? void 0 : _e.products;
             const getProduct = resultList[0];
-            expect(getProduct.category).toEqual(product.category);
+            expect(getProduct === null || getProduct === void 0 ? void 0 : getProduct.category).toEqual(product.category);
             yield productDao.deleteById(prodid);
         }
         catch (error) {
-            console.log(error);
             throw new Error(error.message);
         }
     }));
     it('GET: /products/:id should return product with the id given', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _f, _g;
         try {
             const product = yield productDao.create({ name: 'Samsung Galaxy', price: 500, category: 'Smartphone' });
             const prodid = product.id;
             const res = yield (0, supertest_1.default)(server_1.default).get(`/products/${prodid}`).send();
-            const getProduct = res.body.product;
-            const id = product.id;
-            expect(getProduct.id).toEqual(id);
+            const getProduct = (_f = res.body) === null || _f === void 0 ? void 0 : _f.product;
+            const id = (_g = product) === null || _g === void 0 ? void 0 : _g.id;
+            expect(getProduct === null || getProduct === void 0 ? void 0 : getProduct.id).toEqual(id);
             yield productDao.deleteById(id);
         }
         catch (error) {
-            console.log(error);
             throw new Error(error.message);
         }
     }));

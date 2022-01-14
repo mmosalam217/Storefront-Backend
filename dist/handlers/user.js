@@ -25,7 +25,6 @@ function findAll(req, res) {
             return res.status(200).json({ status: 200, users });
         }
         catch (err) {
-            console.log(err);
             return res.status(500).json({ status: 500, message: 'Error fetching users' });
         }
     });
@@ -75,7 +74,6 @@ function create(req, res) {
             return res.status(200).json({ status: 200, user });
         }
         catch (err) {
-            console.log(err);
             return res.status(500).json({ status: 500, message: 'Error creating user' });
         }
     });
@@ -100,10 +98,9 @@ function authenticate(req, res) {
             const payload = { user_id: user.id, username: user.username };
             const access_token = yield jsonwebtoken_1.default.sign(payload, secret, { expiresIn });
             if (access_token)
-                return res.status(200).json({ status: 200, message: 'Login success', access_token, expires_in: expiresIn });
+                return res.status(200).json({ status: 200, message: 'Login success', user_id: user === null || user === void 0 ? void 0 : user.id, access_token, expires_in: expiresIn });
         }
         catch (err) {
-            console.log(err);
             return res.status(500).json({ status: 500, message: 'Error occured during authentication' });
         }
     });

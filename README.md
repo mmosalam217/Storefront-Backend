@@ -20,6 +20,8 @@ The storefront backend project aims to supply the storefront application with a 
 
 ### Node/Express API:
 - **Version**: Node v16.13.1
+- **Port**: 3000
+- **Application Admin**: *Please provide adminuser data to the related environment variabels*
 
 #### Installation steps:
 - **npm install**: *Install all packages*
@@ -33,6 +35,10 @@ The storefront backend project aims to supply the storefront application with a 
 - **PG_HOST**: *database host IP or URL*
 - **PG_PORT**: *5432*
 - **JWT_SECRET**: *jwt secret*
+- **SUPERADMIN_USERNAME**: *Enter your application's superadmin username*
+- **SUPERADMIN_PASSWORD**: *Enter your application's superadmin password*
+- **SUPERADMIN_FIRSTNAME**: *Enter superadmin's firstname*
+- **SUPERADMIN_LASTNAME**: *Enter Superadmin's lastname*
 - **ENV**: *test or dev*
 
 #### Commands:

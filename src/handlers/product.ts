@@ -29,7 +29,6 @@ async function createProduct(req: Request, res: Response){
         if(product) return res.status(200).json({status: 200, product})
         
     } catch (err) {
-        console.log(err);
         return res.status(500).json({status: 500, message: 'Technical error occured and couldn\'t create product. Please try again later'})
     }
 }
@@ -44,7 +43,6 @@ async function findById(req: Request, res: Response) {
             return res.status(404).json({status: 404, message: `Product with id ${id} couldn't be found`})
         } 
     } catch (err) {
-        console.log(err);
         return res.status(500).json({status: 500, message: `Technical error occured and couldn\'t fetch product. Please try again later`})
     }
 }
@@ -59,7 +57,6 @@ async function filterBy(req: Request, res: Response) {
        const products = await productDao.filter(filter);
         return res.status(200).json({status: 200, products: products})
      }catch (err) {
-         console.log(err);
         return res.status(500).json({status: 500, message: 'Error fetching products'})
     }
 

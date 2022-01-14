@@ -14,7 +14,6 @@ async function findAll(req: Request, res: Response) {
         const users = await userDao.index()
         return res.status(200).json({status: 200, users})
     } catch (err) {
-        console.log(err)
         return res.status(500).json({status: 500, message: 'Error fetching users'})
     }
 }
@@ -58,7 +57,6 @@ async function create(req: Request, res: Response) {
         const user = await userDao.create(userDto);
         return res.status(200).json({status: 200, user})
     } catch (err) {
-        console.log(err)
         return res.status(500).json({status: 500, message: 'Error creating user'})
 
     }
@@ -82,9 +80,8 @@ async function authenticate(req: Request, res: Response) {
         const expiresIn = Date.now() + 60 * 60 // for an hour as a starter
         const payload: JwtPayload = {user_id: user.id, username: user.username}
         const access_token = await jwt.sign(payload, secret, {expiresIn})
-        if(access_token) return res.status(200).json({status: 200, message: 'Login success', access_token, expires_in: expiresIn})
+        if(access_token) return res.status(200).json({status: 200, message: 'Login success', user_id: user?.id, access_token, expires_in: expiresIn})
     } catch (err) {
-        console.log(err)
         return res.status(500).json({status: 500, message: 'Error occured during authentication'})
     }
 }

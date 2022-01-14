@@ -19,7 +19,6 @@ async function placeOrder(req: Request, res: Response) {
         const order = await orderDao.place(cart)
         if(order) return res.status(200).json({status: 200, message: 'Order placed successfully', order})
     } catch (err) {
-        console.log(err)
         return res.status(500).json({status: 500, message: 'Error creating new order'})
     }
     
@@ -35,7 +34,6 @@ async function getUserCurrentOrder(req: Request, res: Response) {
             return res.status(404).json({status: 404, message: 'Currently no orders for user'})
         }
     } catch (err) {
-        console.log(err)
         return res.status(500).json({status: 500, message: 'Error fetching current order for user'})
     }
 }
@@ -45,7 +43,6 @@ async function getUserCompletedOrders(req: Request, res: Response) {
         const orders = await orderDao.getCompletedOrders((req.query.user_id as unknown) as number)
         return res.status(200).json({status: 200, orders})
     } catch (error) {
-        console.log(error)
         return res.status(500).json({status: 500, message: 'Error fetching completed orders for user'})
     }
 }

@@ -56,7 +56,6 @@ export class OrderDao{
         } catch (err) {
             //rollback transaction if error occured
             await conn.query('ROLLBACK')
-            console.log(err)
             throw new Error(`Error placing order, ${(err as Error).message}`)
         }
     }
@@ -76,7 +75,6 @@ export class OrderDao{
             const order = result.rows[0]
             return order
         } catch (err) {
-            console.log(err)
             throw new Error(`Error creating order, ${(err as Error).message}`)
         }
     }
@@ -96,7 +94,6 @@ export class OrderDao{
             const orders = result.rows
             return orders
         } catch (err) {
-            console.log(err)
             throw new Error(`Error creating order, ${(err as Error).message}`)
         }
     }
@@ -109,7 +106,6 @@ export class OrderDao{
             await conn.query(query, [id])
             conn.release()
         } catch (err) {
-            console.log(err)
             throw new Error(`Error creating order, ${(err as Error).message}`)
         }
     }

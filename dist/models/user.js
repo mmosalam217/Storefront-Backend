@@ -76,6 +76,23 @@ class UserDao {
             }
         });
     }
+    // Create application's superadmin if not exists
+    createSuperAdminIfNotExist() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { SUPERADMIN_FIRSTNAME, SUPERADMIN_LASTNAME, SUPERADMIN_USERNAME, SUPERADMIN_PASSWORD } = process.env;
+            try {
+                const pw_hash = yield bcrypt_1.default.hash(SUPERADMIN_PASSWORD, 10);
+                const conn = yield database_1.default.connect();
+                const query = `INSERT INTO users(first_name, last_name, username, password) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING;`;
+                const result = yield conn.query(query, [SUPERADMIN_FIRSTNAME, SUPERADMIN_LASTNAME, SUPERADMIN_USERNAME, pw_hash]);
+                conn.release();
+                return result.rows[0];
+            }
+            catch (error) {
+                throw new Error(`Error creating superuser, ${error.message}`);
+            }
+        });
+    }
     // Onlz used to clear data after tests which include brute-force creating users
     deleteAll() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import { product_route } from './handlers/product'
 import { user_route } from './handlers/user'
 import { order_route } from './handlers/order'
+import { UserDao } from './models/user'
 import cors from 'cors'
 
 const app: express.Application = express()
@@ -19,8 +20,14 @@ app.get('/', function (req: Request, res: Response) {
     res.send('Hello World!')
 })
 
-app.listen(3000, function () {
+app.listen(3000, async function () {
     console.log(`starting app on: ${address}`)
+    const userDao = new UserDao()
+    try {
+        await userDao.createSuperAdminIfNotExist()
+    } catch (error) {
+        console.error(error)
+    }
 })
 
 

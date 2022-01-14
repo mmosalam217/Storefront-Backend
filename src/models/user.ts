@@ -53,7 +53,6 @@ export class UserDao{
             conn.release();
             return result.rows[0];
         }catch(err){
-            console.log(err)
             throw new Error( (err as Error).message)
         }
     }
@@ -68,6 +67,21 @@ export class UserDao{
             return result.rows[0];
         }catch(err){
             throw new Error( (err as Error).message)
+        }
+    }
+
+    // Create application's superadmin if not exists
+    async createSuperAdminIfNotExist(): Promise<User>{
+        const {SUPERADMIN_FIRSTNAME, SUPERADMIN_LASTNAME, SUPERADMIN_USERNAME, SUPERADMIN_PASSWORD} = process.env
+        try {
+            const pw_hash = await bcrypt.hash(SUPERADMIN_PASSWORD as string, 10)
+            const conn = await connection.connect()
+            const query = `INSERT INTO users(first_name, last_name, username, password) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING;`
+            const result = await conn.query(query, [SUPERADMIN_FIRSTNAME, SUPERADMIN_LASTNAME, SUPERADMIN_USERNAME, pw_hash])
+            conn.release()
+            return result.rows[0]
+        } catch (error) {
+            throw new Error(`Error creating superuser, ${(error as Error).message}`)
         }
     }
 
